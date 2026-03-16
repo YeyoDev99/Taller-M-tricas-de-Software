@@ -90,23 +90,41 @@ public class MenuController {
 
     private void actualizarProducto() {
         consultarProductos();
+
         System.out.print("  ID del producto a actualizar: ");
         int id = view.leerEntero();
-        System.out.print("  Nuevo nombre: ");
-        String nombre = view.leerTexto();
-        System.out.print("  Nuevo precio: ");
-        double precio;
-        try {
-            precio = Double.parseDouble(view.leerTexto());
-        } catch (NumberFormatException e) {
-            view.imprimirMensaje("Precio invalido. Operacion cancelada.");
+
+        Producto producto = repo.obtenerProductoPorId(id);
+
+        if (producto == null) {
+            view.imprimirMensaje("No se encontro un producto con ese ID.");
             return;
         }
-        if (repo.actualizarProducto(id, nombre, precio)) {
-            view.imprimirMensaje("Producto actualizado correctamente.");
-        } else {
-            view.imprimirMensaje("No se encontro un producto con ese ID.");
+
+        System.out.print("  Nuevo nombre (enter para mantener '" + producto.getNombre() + "'): ");
+        String nombre = view.leerTexto();
+
+        if (nombre.isBlank()) {
+            nombre = producto.getNombre();
         }
+
+        System.out.print("  Nuevo precio (enter para mantener '" + producto.getPrecio() + "'): ");
+        String precioTexto = view.leerTexto();
+
+        double precio = producto.getPrecio();
+
+        if (!precioTexto.isBlank()) {
+            try {
+                precio = Double.parseDouble(precioTexto);
+            } catch (NumberFormatException e) {
+                view.imprimirMensaje("Precio invalido.");
+                return;
+            }
+        }
+
+        repo.actualizarProducto(id, nombre, precio);
+
+        view.imprimirMensaje("Producto actualizado correctamente.");
     }
 
     private void eliminarProducto() {
@@ -146,17 +164,34 @@ public class MenuController {
 
     private void actualizarCliente() {
         consultarClientes();
+
         System.out.print("  ID del cliente a actualizar: ");
         int id = view.leerEntero();
-        System.out.print("  Nuevo nombre: ");
-        String nombre = view.leerTexto();
-        System.out.print("  Nuevo telefono: ");
-        String telefono = view.leerTexto();
-        if (repo.actualizarCliente(id, nombre, telefono)) {
-            view.imprimirMensaje("Cliente actualizado correctamente.");
-        } else {
+
+        Cliente cliente = repo.obtenerClientePorId(id);
+
+        if (cliente == null) {
             view.imprimirMensaje("No se encontro un cliente con ese ID.");
+            return;
         }
+
+        System.out.print("  Nuevo nombre (enter para mantener '" + cliente.getNombre() + "'): ");
+        String nombre = view.leerTexto();
+
+        if (nombre.isBlank()) {
+            nombre = cliente.getNombre();
+        }
+
+        System.out.print("  Nuevo telefono (enter para mantener '" + cliente.getTelefono() + "'): ");
+        String telefono = view.leerTexto();
+
+        if (telefono.isBlank()) {
+            telefono = cliente.getTelefono();
+        }
+
+        repo.actualizarCliente(id, nombre, telefono);
+
+        view.imprimirMensaje("Cliente actualizado correctamente.");
     }
 
     private void eliminarCliente() {

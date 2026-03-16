@@ -106,4 +106,22 @@ public class FastFoodRepository implements Serializable {
         }
         return false;
     }
+
+    public Producto obtenerProductoPorId(int id) {
+        for (Producto p : productos) {
+            if (p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public Cliente obtenerClientePorId(int id) {
+        for (Cliente c : clientes) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+        return null;
+    }
 }
